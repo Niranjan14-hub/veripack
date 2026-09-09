@@ -1,0 +1,88 @@
+{
+  "key": "cosmetics",
+  "label": "Cosmetics",
+  "description": "Personal care and cosmetic products.",
+  "fields": [
+    {
+      "key": "product_name",
+      "label": "Product Name",
+      "description": "Name and function of the cosmetic product.",
+      "required": true,
+      "severity": "critical",
+      "min_length": 2,
+      "fix": "Print the product name and its function on the front panel."
+    },
+    {
+      "key": "ingredients",
+      "label": "INCI Ingredient List",
+      "description": "Ingredients listed using INCI nomenclature.",
+      "required": true,
+      "severity": "critical",
+      "min_length": 10,
+      "fix": "List ingredients using INCI names in descending order of concentration."
+    },
+    {
+      "key": "net_quantity",
+      "label": "Net Quantity",
+      "description": "Net content in metric units.",
+      "required": true,
+      "severity": "major",
+      "allowed_units": ["g", "kg", "mg", "ml", "l"],
+      "fix": "State net content in metric units (e.g. 100 ml)."
+    },
+    {
+      "key": "expiry_date",
+      "label": "Expiry / PAO",
+      "description": "Expiry date or period-after-opening symbol.",
+      "required": true,
+      "severity": "critical",
+      "pattern": "\\d",
+      "fix": "Add an expiry date or a period-after-opening marking (e.g. 12M)."
+    },
+    {
+      "key": "manufacturer",
+      "label": "Responsible Person",
+      "description": "Name and address of the manufacturer or responsible person.",
+      "required": true,
+      "severity": "major",
+      "min_length": 4,
+      "fix": "Include the name and address of the manufacturer or responsible person."
+    },
+    {
+      "key": "batch_number",
+      "label": "Batch Number",
+      "description": "Batch code for traceability.",
+      "required": true,
+      "severity": "major",
+      "min_length": 2,
+      "fix": "Print a batch code on the container and the outer packaging."
+    },
+    {
+      "key": "warnings",
+      "label": "Warnings & Precautions",
+      "description": "Safety warnings and usage precautions.",
+      "required": true,
+      "severity": "critical",
+      "min_length": 5,
+      "fix": "Add required safety warnings, e.g. 'For external use only. Avoid contact with eyes.'"
+    },
+    {
+      "key": "usage_instructions",
+      "label": "Directions for Use",
+      "description": "How to use the product.",
+      "required": false,
+      "severity": "minor",
+      "min_length": 5,
+      "fix": "Add directions for use where the intended use is not obvious."
+    },
+    {
+      "key": "country_of_origin",
+      "label": "Country of Origin",
+      "description": "Country where the product was made.",
+      "required": true,
+      "severity": "minor",
+      "min_length": 2,
+      "fix": "Add a country of origin statement."
+    }
+  ]
+}
