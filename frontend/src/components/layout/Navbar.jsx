@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ScanLine } from 'lucide-react';
+import { LogOut, ScanLine } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { useAuth } from '../../lib/auth';
 import { cn } from '../../lib/format';
 
 const LINKS = [
@@ -10,9 +11,20 @@ const LINKS = [
   { to: '/history', label: 'History' },
 ];
 
+function initials(name) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join('');
+}
+
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -37,7 +49,7 @@ export function Navbar() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
-          {LINKS.map((link) => (
+          {(user ? LINKS : []).map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
@@ -61,12 +73,43 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button to="/history" variant="ghost" size="sm" className="md:hidden">
-            History
-          </Button>
-          <Button to="/scan" variant="primary" size="sm">
-            Scan a package
-          </Button>
+          {user ? (
+            <>
+              <Button to="/history" variant="ghost" size="sm" className="md:hidden">
+                History
+              </Button>
+              <span
+                title={user.email}
+                className="hidden h-8 w-8 place-items-center rounded-full border border-line-strong bg-elevated text-2xs font-semibold text-ink sm:grid"
+              >
+                {initials(user.name)}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                aria-label="Sign out"
+                onClick={() => {
+                  logout();
+                  navigate('/');
+                }}
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                Sign out
+              </Button>
+              <Button to="/scan" variant="primary" size="sm">
+                Scan a package
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button to="/login" variant="ghost" size="sm">
+                Sign in
+              </Button>
+              <Button to="/signup" variant="primary" size="sm">
+                Get started
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>

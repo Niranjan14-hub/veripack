@@ -1,12 +1,14 @@
 from typing import Literal, Optional
 
-from fastapi import APIRouter, File, Form, HTTPException, Query, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
 
+from app.auth import current_user
 from app.compliance import engine
 from app.config import get_settings
 from app.db import get_repository
 from app.models.compliance import CategoryInfo
 from app.models.scan import Scan, ScanListResponse, ScanSummary
+from app.models.user import UserPublic
 from app.services import pipeline, samples
 
 router = APIRouter(prefix="/api", tags=["scans"])
@@ -26,7 +28,8 @@ def _summarise(document: dict) -> ScanSummary:
     )
 
 
-async def _store(scan: Scan) -> Scan:
+async def _store(scan: Scan, user: UserPublic) -> Scan:
+    scan.user_id = user.id
     await get_repository().insert(scan.model_dump(mode="json"))
     return scan
 
@@ -45,6 +48,7 @@ async def get_samples() -> list[dict]:
 async def create_scan(
     image: UploadFile = File(...),
     category: str = Form(...),
+    user: UserPublic = Depends(current_user),
 ) -> Scan:
     settings = get_settings()
     content = await image.read()
@@ -58,11 +62,14 @@ async def create_scan(
     except pipeline.PipelineError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
-    return await _store(scan)
+    return await _store(scan, user)
 
 
 @router.post("/scans/demo", response_model=Scan, status_code=201)
-async def create_demo_scan(sample: str = Query(...)) -> Scan:
+async def create_demo_scan(
+    sample: str = Query(...),
+    user: UserPublic = Depends(current_user),
+) -> Scan:
     try:
         image_bytes, category = samples.render(sample)
     except KeyError as exc:
@@ -74,7 +81,7 @@ async def create_demo_scan(sample: str = Query(...)) -> Scan:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
     scan.demo = True
-    return await _store(scan)
+    return await _store(scan, user)
 
 
 @router.get("/scans", response_model=ScanListResponse)
@@ -83,8 +90,9 @@ async def list_scans(
     page_size: int = Query(12, ge=1, le=50),
     verdict: Optional[Literal["verified", "issues_found"]] = None,
     category: Optional[str] = None,
+    user: UserPublic = Depends(current_user),
 ) -> ScanListResponse:
-    documents, total = await get_repository().list(page, page_size, verdict, category)
+    documents, total = await get_repository().list(user.id, page, page_size, verdict, category)
     return ScanListResponse(
         items=[_summarise(document) for document in documents],
         total=total,
@@ -94,14 +102,14 @@ async def list_scans(
 
 
 @router.get("/scans/{scan_id}", response_model=Scan)
-async def get_scan(scan_id: str) -> Scan:
-    document = await get_repository().get(scan_id)
+async def get_scan(scan_id: str, user: UserPublic = Depends(current_user)) -> Scan:
+    document = await get_repository().get(scan_id, user.id)
     if not document:
         raise HTTPException(status_code=404, detail="Scan not found.")
     return Scan(**document)
 
 
 @router.delete("/scans/{scan_id}", status_code=204)
-async def delete_scan(scan_id: str) -> None:
-    if not await get_repository().delete(scan_id):
+async def delete_scan(scan_id: str, user: UserPublic = Depends(current_user)) -> None:
+    if not await get_repository().delete(scan_id, user.id):
         raise HTTPException(status_code=404, detail="Scan not found.")

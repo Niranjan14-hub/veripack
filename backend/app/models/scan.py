@@ -54,6 +54,7 @@ class Timings(BaseModel):
 
 class Scan(BaseModel):
     id: str
+    user_id: Optional[str] = None
     created_at: datetime
     category: str
     category_label: str

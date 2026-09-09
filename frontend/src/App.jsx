@@ -3,7 +3,9 @@ import { Route, Routes, useLocation, useNavigationType } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
+import { RequireAuth } from './components/auth/RequireAuth';
 import { Landing } from './pages/Landing';
+import { Auth } from './pages/Auth';
 import { Scan } from './pages/Scan';
 import { Results } from './pages/Results';
 import { History } from './pages/History';
@@ -24,9 +26,32 @@ export default function App() {
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<Landing />} />
-            <Route path="/scan" element={<Scan />} />
-            <Route path="/results/:id" element={<Results />} />
-            <Route path="/history" element={<History />} />
+            <Route path="/login" element={<Auth mode="login" />} />
+            <Route path="/signup" element={<Auth mode="signup" />} />
+            <Route
+              path="/scan"
+              element={
+                <RequireAuth>
+                  <Scan />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/results/:id"
+              element={
+                <RequireAuth>
+                  <Results />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/history"
+              element={
+                <RequireAuth>
+                  <History />
+                </RequireAuth>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AnimatePresence>

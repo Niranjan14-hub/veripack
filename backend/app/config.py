@@ -14,7 +14,10 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
     max_upload_bytes: int = 10 * 1024 * 1024
     local_store_path: str = "./data/scans.json"
+    local_user_store_path: str = "./data/users.json"
     media_path: str = "./data/media"
+    jwt_secret: str = ""
+    jwt_expire_minutes: int = 60 * 24 * 7
 
     @property
     def cors_origin_list(self) -> list[str]:
