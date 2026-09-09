@@ -17,14 +17,26 @@ export function Results() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [scan, setScan] = useState(state?.scan ?? null);
+  const [scan, setScan] = useState(state?.scan?.id === id ? state.scan : null);
   const [error, setError] = useState(null);
   const [activeField, setActiveField] = useState(null);
 
   useEffect(() => {
-    if (scan?.id === id) return;
-    setScan(null);
-    api.getScan(id).then(setScan).catch((exception) => setError(exception.message));
+    let stale = false;
+    setError(null);
+    api
+      .getScan(id)
+      .then((fresh) => {
+        if (!stale) setScan(fresh);
+      })
+      .catch((exception) => {
+        if (stale) return;
+        setScan(null);
+        setError(exception.message);
+      });
+    return () => {
+      stale = true;
+    };
   }, [id]);
 
   const remove = async () => {
