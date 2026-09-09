@@ -51,13 +51,20 @@ Both external services are optional so the prototype runs with zero credentials:
 | ---------------- | -------------------------------------------------------------------- |
 | `GEMINI_API_KEY` | Falls back to a regex label parser (`app/services/heuristics.py`)     |
 | `MONGODB_URI`    | Falls back to a local JSON store at `backend/data/scans.json`         |
+| `JWT_SECRET`     | Falls back to a per-process secret — tokens are invalidated on restart |
 
 `GET /api/health` reports which backends are active.
 
 ## API
 
+All `/api/scans*` endpoints require an `Authorization: Bearer <token>` header and only ever see the
+signed-in user's own scans.
+
 | Method   | Path                        | Purpose                                             |
 | -------- | --------------------------- | --------------------------------------------------- |
+| `POST`   | `/api/auth/signup`          | Create an account → JWT + profile                    |
+| `POST`   | `/api/auth/login`           | Exchange credentials for a JWT                       |
+| `GET`    | `/api/auth/me`              | Current profile for a bearer token                   |
 | `POST`   | `/api/scans`                | Multipart image + category → full scan result        |
 | `POST`   | `/api/scans/demo?sample=`   | Render a bundled sample label and run the pipeline   |
 | `GET`    | `/api/scans`                | Paginated history, filterable by verdict/category    |
@@ -80,6 +87,8 @@ severity-weighted penalty per issue from 100.
   the results page can highlight the exact region of the package it was read from.
 - **Hallucination guard** — values are cross-checked against the raw OCR text; anything the model
   produced that is not present verbatim is flagged as `ungrounded` rather than trusted.
+- **Per-user isolation** — scans carry a `user_id` and every read, write and delete is filtered by
+  the token subject, so a scan belonging to someone else is a 404, not a 403 leak.
 - **Readability gate** — captures below a word-count and OCR-confidence floor are rejected with
   retake guidance instead of returning confident nonsense.
 

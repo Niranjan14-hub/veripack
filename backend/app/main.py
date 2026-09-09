@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.config import get_settings
 from app.db import init_repository
-from app.routers import health, scans
+from app.routers import auth, health, scans
 
 logging.basicConfig(level=logging.INFO)
 
@@ -34,6 +34,7 @@ def create_app() -> FastAPI:
     Path(settings.media_path).mkdir(parents=True, exist_ok=True)
     app.mount("/media", StaticFiles(directory=settings.media_path), name="media")
     app.include_router(health.router)
+    app.include_router(auth.router)
     app.include_router(scans.router)
     return app
 
