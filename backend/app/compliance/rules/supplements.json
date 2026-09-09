@@ -1,0 +1,88 @@
+{
+  "key": "supplements",
+  "label": "Dietary Supplements",
+  "description": "Vitamins, minerals and nutraceutical products.",
+  "fields": [
+    {
+      "key": "product_name",
+      "label": "Product Name",
+      "description": "Name of the supplement including its form.",
+      "required": true,
+      "severity": "critical",
+      "min_length": 2,
+      "fix": "Print the product name and dosage form (tablet, capsule, powder)."
+    },
+    {
+      "key": "supplement_facts",
+      "label": "Supplement Facts",
+      "description": "Panel listing active ingredients and amounts per serving.",
+      "required": true,
+      "severity": "critical",
+      "min_length": 8,
+      "fix": "Add a Supplement Facts panel with amount per serving and % daily value."
+    },
+    {
+      "key": "ingredients",
+      "label": "Ingredient List",
+      "description": "Other ingredients and excipients.",
+      "required": true,
+      "severity": "major",
+      "min_length": 8,
+      "fix": "List other ingredients after the Supplement Facts panel."
+    },
+    {
+      "key": "dosage",
+      "label": "Recommended Dosage",
+      "description": "Recommended daily intake.",
+      "required": true,
+      "severity": "critical",
+      "min_length": 4,
+      "fix": "State the recommended daily dose and how to take it."
+    },
+    {
+      "key": "warnings",
+      "label": "Warnings",
+      "description": "Safety warnings and contraindications.",
+      "required": true,
+      "severity": "critical",
+      "min_length": 5,
+      "fix": "Add warnings such as 'Not for use by pregnant women. Keep out of reach of children.'"
+    },
+    {
+      "key": "net_quantity",
+      "label": "Net Quantity",
+      "description": "Count or net weight of the pack.",
+      "required": true,
+      "severity": "major",
+      "allowed_units": ["g", "kg", "mg", "ml", "l", "count", "tablets", "capsules"],
+      "fix": "State the number of units or the net weight of the pack."
+    },
+    {
+      "key": "expiry_date",
+      "label": "Expiry Date",
+      "description": "Use-by date.",
+      "required": true,
+      "severity": "critical",
+      "pattern": "\\d",
+      "fix": "Print an expiry date in a legible format."
+    },
+    {
+      "key": "batch_number",
+      "label": "Batch Number",
+      "description": "Batch or lot identifier.",
+      "required": true,
+      "severity": "minor",
+      "min_length": 2,
+      "fix": "Print a batch or lot code for traceability."
+    },
+    {
+      "key": "manufacturer",
+      "label": "Manufacturer",
+      "description": "Name and address of the manufacturer or marketer.",
+      "required": true,
+      "severity": "major",
+      "min_length": 4,
+      "fix": "Include the name and address of the manufacturer or marketer."
+    }
+  ]
+}

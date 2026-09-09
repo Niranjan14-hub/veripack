@@ -1,0 +1,97 @@
+{
+  "key": "food",
+  "label": "Packaged Food",
+  "description": "Pre-packaged food products sold at retail.",
+  "fields": [
+    {
+      "key": "product_name",
+      "label": "Product Name",
+      "description": "Common or generic name of the food product.",
+      "required": true,
+      "severity": "critical",
+      "min_length": 2,
+      "fix": "Print the common name of the food prominently on the principal display panel."
+    },
+    {
+      "key": "ingredients",
+      "label": "Ingredient List",
+      "description": "Full ingredient list in descending order of weight.",
+      "required": true,
+      "severity": "critical",
+      "min_length": 10,
+      "fix": "List every ingredient in descending order of weight, prefixed with 'Ingredients:'."
+    },
+    {
+      "key": "allergens",
+      "label": "Allergen Declaration",
+      "description": "Declaration of major allergens contained in the product.",
+      "required": true,
+      "severity": "critical",
+      "min_length": 3,
+      "fix": "Add a 'Contains:' statement naming every major allergen present."
+    },
+    {
+      "key": "net_quantity",
+      "label": "Net Quantity",
+      "description": "Net weight or volume in metric units.",
+      "required": true,
+      "severity": "major",
+      "allowed_units": ["g", "kg", "mg", "ml", "l", "cl"],
+      "fix": "State net quantity in metric units (e.g. 250 g or 500 ml)."
+    },
+    {
+      "key": "expiry_date",
+      "label": "Expiry / Best Before",
+      "description": "Best before or use-by date.",
+      "required": true,
+      "severity": "critical",
+      "pattern": "\\d",
+      "fix": "Print a 'Best Before' or 'Use By' date in a legible format."
+    },
+    {
+      "key": "manufacturer",
+      "label": "Manufacturer / Packer",
+      "description": "Name and address of the manufacturer or packer.",
+      "required": true,
+      "severity": "major",
+      "min_length": 4,
+      "fix": "Include the name and full address of the manufacturer, packer or importer."
+    },
+    {
+      "key": "country_of_origin",
+      "label": "Country of Origin",
+      "description": "Country where the product was made.",
+      "required": true,
+      "severity": "minor",
+      "min_length": 2,
+      "fix": "Add a country of origin statement, e.g. 'Made in India'."
+    },
+    {
+      "key": "nutrition",
+      "label": "Nutrition Information",
+      "description": "Nutrition facts per 100 g / 100 ml or per serving.",
+      "required": true,
+      "severity": "major",
+      "min_length": 8,
+      "fix": "Add a nutrition panel with energy, fat, carbohydrate, protein and salt values."
+    },
+    {
+      "key": "batch_number",
+      "label": "Batch / Lot Number",
+      "description": "Batch or lot identifier for traceability.",
+      "required": true,
+      "severity": "minor",
+      "min_length": 2,
+      "fix": "Print a batch or lot code for traceability."
+    },
+    {
+      "key": "storage_instructions",
+      "label": "Storage Instructions",
+      "description": "How the product should be stored.",
+      "required": false,
+      "severity": "minor",
+      "min_length": 5,
+      "fix": "Add storage guidance such as 'Store in a cool, dry place'."
+    }
+  ]
+}
