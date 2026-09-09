@@ -10,15 +10,19 @@ export function ImageDropzone({ file, onSelect, onError, disabled }) {
   const [dragging, setDragging] = useState(false);
   const [preview, setPreview] = useState(null);
   const inputRef = useRef(null);
+  const objectUrl = useRef(null);
 
   useEffect(() => {
+    if (objectUrl.current) {
+      URL.revokeObjectURL(objectUrl.current);
+      objectUrl.current = null;
+    }
     if (!file) {
       setPreview(null);
-      return undefined;
+      return;
     }
-    const url = URL.createObjectURL(file);
-    setPreview(url);
-    return () => URL.revokeObjectURL(url);
+    objectUrl.current = URL.createObjectURL(file);
+    setPreview(objectUrl.current);
   }, [file]);
 
   const accept = useCallback(

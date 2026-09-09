@@ -1,4 +1,5 @@
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Route, Routes, useLocation, useNavigationType } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
@@ -10,6 +11,11 @@ import { NotFound } from './pages/NotFound';
 
 export default function App() {
   const location = useLocation();
+  const navigationType = useNavigationType();
+
+  useEffect(() => {
+    if (navigationType !== 'POP') window.scrollTo(0, 0);
+  }, [location.pathname, navigationType]);
 
   return (
     <div className="flex min-h-screen flex-col">
